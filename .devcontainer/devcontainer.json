@@ -1,0 +1,32 @@
+// badprog.com
+{
+    // Dev container name
+    "name": "${localWorkspaceFolderBasename}",
+    // How to build this contener
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "PROJECT_NAME": "${localWorkspaceFolderBasename}"
+        },
+        // .. = the parent folder of this file, so the project folder (the root project).
+        "context": ".."
+    },
+    // The path of the workspace inside the container
+    "workspaceFolder": "/workspaces/ros2_ws",
+    // source = the host project folder, target = the project inside the container
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ros2_ws,type=bind",
+    // Whatever the user from Dockerfile, we specifiy the one of our choice here
+    "remoteUser": "badprog",
+    // Specific to VSCode (can be changed for every programmer)
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "workbench.colorCustomizations": {
+                    "statusBarItem.remoteBackground": "#ce16f3",
+                    "statusBar.background": "#0d22db"
+                }
+            }
+        }
+    }
+}

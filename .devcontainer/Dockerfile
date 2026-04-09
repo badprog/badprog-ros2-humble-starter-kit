@@ -4,7 +4,7 @@ FROM osrf/ros:humble-desktop-full
 
 # Variables only available for this Dockerfile
 ARG USERNAME=badprog
-ARG WORKDIR_NAME=/workspaces/ros2_ws
+ARG WORKDIR_NAME=/workspaces
 
 # Update the tool list then delete it once toos installed (save space)
 RUN apt-get update && apt-get install -y \

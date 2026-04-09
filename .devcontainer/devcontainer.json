@@ -12,9 +12,9 @@
         "context": ".."
     },
     // The path of the workspace inside the container
-    "workspaceFolder": "/workspaces/ros2_ws",
+    "workspaceFolder": "/workspaces",
     // source = the host project folder, target = the project inside the container
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/ros2_ws,type=bind",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind",
     // Whatever the user from Dockerfile, we specifiy the one of our choice here
     "remoteUser": "badprog",
     // Specific to VSCode (can be changed for every programmer)

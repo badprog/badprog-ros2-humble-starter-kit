@@ -2,7 +2,7 @@
 {
     // Dev container name
     "name": "${localWorkspaceFolderBasename}",
-    // How to build this contener
+    // How to build this container
     "build": {
         "dockerfile": "Dockerfile",
         "args": {

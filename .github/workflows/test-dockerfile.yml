@@ -49,14 +49,13 @@ jobs:
       # ----------
       - name: Test 1 Check $FROM_IMAGE env
         run: |
-          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE)
-          echo "Found: $RESULT"
+          RESULT=$(docker run --rm ${{ env.env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE | tr -d '\r')
+          echo "Found: [$RESULT]"
           if [ "$RESULT" == "${{ env.EXPECTED_ROS_IMAGE }}" ]; then 
-            echo "✅ Success"
-            exit 0;
+            echo "✅ Success."
           else 
-            echo "❌ Error"
-            exit 1;
+            echo "❌ Error: Expected ${{ env.EXPECTED_ROS_IMAGE }} but got [$RESULT]."
+            exit 1
           fi
 
       # ----------
@@ -64,15 +63,26 @@ jobs:
       # ----------
       - name: Test 2 - Check user identity
         run: |
-          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} whoami)
-          echo "User is: $RESULT" 
-          [[ "$RESULT" == "${{ env.EXPECTED_USER }}" ]] && echo "✅ User OK"
+          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} whoami | tr -d '\r')
+          echo "User is: [$RESULT]" 
+          if [ "$RESULT" == "${{ env.EXPECTED_USER }}" ]; then
+            echo "✅ User OK."
+          else
+            echo "❌ Error: User is not ${{ env.EXPECTED_USER }}."
+            exit 1
+          fi
 
       # ----------
       # Test 3
       # ----------
       - name: Test 3 - Check ROS sourcing
         run: |
-          docker run --rm ${{ env.BUILT_IMAGE_NAME }} \
-            grep -F "${{ env.ROS_SOURCE_STR }}" \
-            /home/${{ env.EXPECTED_USER }}/.bashrc
+          echo "Checking for: ${{ env.ROS_SOURCE_STR }} in .bashrc."
+
+          # Execute grep. If something is found, returns 0, else 1.
+          if docker run --rm ${{ env.BUILT_IMAGE_NAME }} grep -F "${{ env.ROS_SOURCE_STR }}" /home/${{ env.EXPECTED_USER }}/.bashrc; then
+            echo "✅ Success: ROS sourcing is correctly configured."
+          else
+            echo "❌ Error: The line '${{ env.ROS_SOURCE_STR }}' was not found in .bashrc."
+            exit 1
+          fi

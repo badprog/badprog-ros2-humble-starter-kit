@@ -8,10 +8,11 @@ name: Test Dockerfile
 # env
 # #############################
 env:
-  CONTAINER_NAME: starter-kit-test
+  BUILT_IMAGE_NAME: built-starter-kit-test
   EXPECTED_ROS_IMAGE: ros:humble-ros-base
   EXPECTED_USER: badprog
   ROS_SOURCE_STR: "source /opt/ros/humble/setup.bash"
+  DOCKERFILE_PATH: .devcontainer/Dockerfile
 
 # #############################
 # on
@@ -39,21 +40,21 @@ jobs:
       # Build
       # ----------
       - name: Build Docker image
-        run: docker build -t ${{ env.CONTAINER_NAME }} .
+        run: docker build -t ${{ env.BUILT_IMAGE_NAME }} -f ${{ env.DOCKERFILE_PATH }} .
 
       # ----------
       # Test 1
       # ----------
       - name: Test 1 Check $FROM_IMAGE env
         run: |
-          RESULT=$(docker run --rm ${{ env.CONTAINER_NAME }} printenv FROM_IMAGE)
+          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE)
           echo "Found: $RESULT"
           if [ "$RESULT" == "${{ env.EXPECTED_ROS_IMAGE }}" ]; then 
             echo "✅ Success"
             exit 0;
           else 
-              echo "❌ Error"
-              exit 1;
+            echo "❌ Error"
+            exit 1;
           fi
 
       # ----------
@@ -61,7 +62,7 @@ jobs:
       # ----------
       - name: Test 2 - Check user identity
         run: |
-          RESULT=$(docker run --rm ${{ env.CONTAINER_NAME }} whoami)
+          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} whoami)
           echo "User is: $RESULT" 
           [[ "$RESULT" == "${{ env.EXPECTED_USER }}" ]] && echo "✅ User OK"
 
@@ -70,6 +71,6 @@ jobs:
       # ----------
       - name: Test 3 - Check ROS sourcing
         run: |
-          docker run --rm ${{ env.CONTAINER_NAME }} \
+          docker run --rm ${{ env.BUILT_IMAGE_NAME }} \
             grep -F "${{ env.ROS_SOURCE_STR }}" \
             /home/${{ env.EXPECTED_USER }}/.bashrc

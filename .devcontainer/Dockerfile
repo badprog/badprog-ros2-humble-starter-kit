@@ -1,10 +1,21 @@
 # badprog.com
-# Image ROS 2 Humble
-FROM osrf/ros:humble-desktop-full
+ARG ROS2_HUB=ros
+ARG ROS2_DISTRO=humble
+ARG ROS2_VARIANT=ros-base
+ARG DOCKER_IMAGE=$ROS2_HUB:$ROS2_DISTRO-$ROS2_VARIANT
+
+# Image 
+FROM $DOCKER_IMAGE
+
+# Import the previous ARG because the FROM instruction erased them
+ARG DOCKER_IMAGE
+
+# Env to get from the container
+ENV FROM_IMAGE=$DOCKER_IMAGE
 
 # Variables only available for this Dockerfile
 ARG USERNAME=badprog
-ARG WORKDIR_NAME=/workspaces
+ARG WORKDIR_NAME=/workspaces/ros2_ws
 
 # Update the tool list then delete it once toos installed (save space)
 RUN apt-get update && apt-get install -y \

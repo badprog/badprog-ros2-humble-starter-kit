@@ -74,7 +74,6 @@ jobs:
 
       # ----------
       # Test 3
-      # Execute grep. If something is found, returns 0, else 1.
       # ----------
       - name: Test 3 - Check ROS sourcing
         run: |

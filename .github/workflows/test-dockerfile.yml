@@ -47,7 +47,7 @@ jobs:
       # ----------
       # Test 1
       # ----------
-        - name: Test 1 Check $FROM_IMAGE env
+      - name: Test 1 Check $FROM_IMAGE env
         run: |
           RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE | tr -d '\r')
           echo "Found: [$RESULT]"

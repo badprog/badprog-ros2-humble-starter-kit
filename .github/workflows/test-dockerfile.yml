@@ -12,18 +12,19 @@ env:
   EXPECTED_ROS_IMAGE: ros:humble-ros-base
   EXPECTED_USER: badprog
   ROS_SOURCE_STR: "source /opt/ros/humble/setup.bash"
+  DOCKERFILE_PATH: .devcontainer/Dockerfile
 
 # #############################
 # on
 # #############################
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-      
+    branches: [main]
+
 # #############################
-# jobs 
+# jobs
 # #############################
 jobs:
   validate-image:
@@ -34,12 +35,14 @@ jobs:
       # ----------
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       # ----------
-      # Build 
+      # Build
       # ----------
       - name: Build Docker image
-        run: docker build -t ${{ env.CONTAINER_NAME }} .
+        run: docker build \
+          -t ${{ env.CONTAINER_NAME }} \
+          -f ${{ env.DOCKERFILE_PATH }} .
 
       # ----------
       # Test 1
@@ -55,8 +58,8 @@ jobs:
               echo "❌ Error"
               exit 1;
           fi
-            
-      # ----------  
+
+      # ----------
       # Test 2
       # ----------
       - name: Test 2 - Check user identity
@@ -64,7 +67,7 @@ jobs:
           RESULT=$(docker run --rm ${{ env.CONTAINER_NAME }} whoami)
           echo "User is: $RESULT" 
           [[ "$RESULT" == "${{ env.EXPECTED_USER }}" ]] && echo "✅ User OK"
-      
+
       # ----------
       # Test 3
       # ----------
@@ -73,4 +76,3 @@ jobs:
           docker run --rm ${{ env.CONTAINER_NAME }} \
             grep -F "${{ env.ROS_SOURCE_STR }}" \
             /home/${{ env.EXPECTED_USER }}/.bashrc
-

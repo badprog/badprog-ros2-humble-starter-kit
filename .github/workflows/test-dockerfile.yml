@@ -47,9 +47,9 @@ jobs:
       # ----------
       # Test 1
       # ----------
-      - name: Test 1 Check $FROM_IMAGE env
+        - name: Test 1 Check $FROM_IMAGE env
         run: |
-          RESULT=$(docker run --rm ${{ env.env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE | tr -d '\r')
+          RESULT=$(docker run --rm ${{ env.BUILT_IMAGE_NAME }} printenv FROM_IMAGE | tr -d '\r')
           echo "Found: [$RESULT]"
           if [ "$RESULT" == "${{ env.EXPECTED_ROS_IMAGE }}" ]; then 
             echo "✅ Success."
@@ -74,12 +74,12 @@ jobs:
 
       # ----------
       # Test 3
+      # Execute grep. If something is found, returns 0, else 1.
       # ----------
       - name: Test 3 - Check ROS sourcing
         run: |
           echo "Checking for: ${{ env.ROS_SOURCE_STR }} in .bashrc."
 
-          # Execute grep. If something is found, returns 0, else 1.
           if docker run --rm ${{ env.BUILT_IMAGE_NAME }} grep -F "${{ env.ROS_SOURCE_STR }}" /home/${{ env.EXPECTED_USER }}/.bashrc; then
             echo "✅ Success: ROS sourcing is correctly configured."
           else

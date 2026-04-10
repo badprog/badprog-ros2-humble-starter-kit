@@ -1,0 +1,80 @@
+# badprog.com
+# #############################
+# name
+# #############################
+name: Test devcontainer.json
+
+# #############################
+# env
+# #############################
+env:
+  # BUILT_IMAGE_NAME: built-starter-kit-test
+  # EXPECTED_ROS_IMAGE: ros:humble-ros-base
+  # EXPECTED_USER: badprog
+  # ROS_SOURCE_STR: "source /opt/ros/humble/setup.bash"
+  # DOCKERFILE_PATH: .devcontainer/Dockerfile
+  # Option to avoid warning from Github Actions (Node.js 20 to 24)
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+# #############################
+# on
+# #############################
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# #############################
+# jobs
+# #############################
+jobs:
+  validate-image:
+    runs-on: ubuntu-22.04
+    steps:
+      # ----------
+      # Checkout
+      # ----------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ----------
+      # Install DevContainer CLI for the tests
+      # ----------
+      - name: Install Dev Container CLI
+        run: npm install -g @devcontainers/cli
+
+      # ----------
+      # Build and make it alive
+      # ----------
+      - name: Build and Up Dev Container
+        run: |
+          devcontainer up --workspace-folder .
+
+      # ----------
+      # Test 1
+      # ----------
+      - name: Test 1 - Check Workspace Folder
+        run: |
+          RESULT=$(devcontainer exec --workspace-folder . pwd)
+          echo "Workspace is: [$RESULT]"
+          if [ "$RESULT" == "/workspaces" ]; then
+            echo "✅ Workspace OK."
+          else
+            echo "❌ Error: Expected /workspaces but got [$RESULT]."
+            exit 1
+          fi
+
+      # ----------
+      # Test 2
+      # ----------
+      - name: Test 2 - Check Remote User
+        run: |
+          RESULT=$(devcontainer exec --workspace-folder . whoami)
+          echo "Remote user is: [$RESULT]"
+          if [ "$RESULT" == "badprog" ]; then
+            echo "✅ User OK."
+          else
+            echo "❌ Error: Expected badprog but got [$RESULT]."
+            exit 1
+          fi

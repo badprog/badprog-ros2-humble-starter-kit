@@ -5,18 +5,6 @@
 name: Test devcontainer.json
 
 # #############################
-# env
-# #############################
-# env:
-# BUILT_IMAGE_NAME: built-starter-kit-test
-# EXPECTED_ROS_IMAGE: ros:humble-ros-base
-# EXPECTED_USER: badprog
-# ROS_SOURCE_STR: "source /opt/ros/humble/setup.bash"
-# DOCKERFILE_PATH: .devcontainer/Dockerfile
-# Option to avoid warning from Github Actions (Node.js 20 to 24)
-# FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-# #############################
 # on
 # #############################
 on:

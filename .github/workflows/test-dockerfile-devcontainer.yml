@@ -91,6 +91,7 @@ jobs:
     # job-dockerfile
     # #############################
   job-devcontainer:
+    needs: job-dockerfile
     runs-on: ubuntu-22.04
     steps:
       # ----------

@@ -16,6 +16,9 @@ ENV FROM_IMAGE=$DOCKER_IMAGE
 # Variables only available for this Dockerfile
 ARG USERNAME=badprog
 ARG WORKDIR_NAME=/workspaces/ros2_ws
+ARG FILE_INSTALL_SETUP_BASH=$WORKDIR_NAME/install/setup.bash
+ARG FILE_OPT_SETUP_BASH=/opt/ros/humble/setup.bash
+ARG FILE_USER_BASHRC=/home/$USERNAME/.bashrc
 
 # Update the tool list then delete it once toos installed (save space)
 RUN apt-get update && apt-get install -y \
@@ -39,4 +42,5 @@ USER $USERNAME
 WORKDIR $WORKDIR_NAME
 
 # Automatically source ROS 2 environment for every new shell session
-RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USERNAME/.bashrc
+RUN echo "source $FILE_OPT_SETUP_BASH" >> $FILE_USER_BASHRC
+RUN echo "if [ -f $FILE_INSTALL_SETUP_BASH ]; then source $FILE_INSTALL_SETUP_BASH; fi" >> $FILE_USER_BASHRC 
